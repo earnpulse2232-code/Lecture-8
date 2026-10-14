@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#f8fafc">
+    <title>GK SSC - Fundamental Rights (Part III) - Polity 5.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --bg-main: #f8fafc; --bg-card: #ffffff; --primary: #2563eb; --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff; --text-dark: #0f172a; --text-muted: #64748b; --border-color: #e2e8f0;
+            --green: #10b981; --green-light: #ecfdf5; --red: #ef4444; --red-light: #fef2f2;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08);
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); min-height: 100dvh; font-size: 15px; line-height: 1.5; overflow-x: hidden; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+        .hidden { display: none !important; }
+        .start-screen { position: fixed; inset: 0; background: var(--bg-main); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .start-card { width: 100%; max-width: 440px; background: var(--bg-card); border-radius: 24px; padding: 36px 28px; box-shadow: var(--shadow-lg); text-align: center; border: 1px solid var(--border-color); }
+        .brand-icon { width: 60px; height: 60px; background: var(--primary-light); color: var(--primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px; }
+        .start-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+        .start-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+        .mode-btn { display: flex; align-items: center; gap: 16px; width: 100%; padding: 16px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 16px; text-align: left; margin-bottom: 12px; transition: all 0.2s ease; }
+        .mode-btn:hover { border-color: var(--primary); background: var(--primary-light); transform: translateY(-2px); }
+        .mode-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+        .mode-icon.quiz { background: #dbeafe; color: #2563eb; }
+        .mode-icon.test { background: #d1fae5; color: #059669; }
+        .mode-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+        .mode-info-txt { font-size: 12px; color: var(--text-muted); }
+        .mode-arrow { margin-left: auto; color: var(--text-muted); font-size: 14px; }
+        .quiz-app { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        .quiz-header { flex-shrink: 0; background: #fff; border-bottom: 1px solid var(--border-color); padding: 12px 18px; }
+        .quiz-header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .hdr-brand { font-weight: 700; font-size: 15px; }
+        .hdr-timer { padding: 6px 14px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 20px; font-family: monospace; font-weight: 700; color: var(--primary); }
+        .hdr-btn { width: 38px; height: 38px; border-radius: 10px; background: #fff; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; }
+        .quiz-main { flex: 1; overflow-y: auto; max-width: 900px; width: 100%; margin: 0 auto; padding: 24px 16px; }
+        .q-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-sm); }
+        .q-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .q-num-badge { padding: 5px 12px; background: var(--primary-light); color: var(--primary); border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .lang-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border-color); font-size: 12px; font-weight: 600; background: #fff; display: inline-flex; align-items: center; gap: 6px; }
+        .q-text { font-size: 16px; font-weight: 600; line-height: 1.6; margin-bottom: 22px; white-space: pre-line; }
+        .opts { display: flex; flex-direction: column; gap: 11px; }
+        .opt { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 14px; cursor: pointer; transition: all 0.15s ease; }
+        .opt:hover:not(.locked) { border-color: var(--primary); background: #f8fafc; }
+        .opt.selected { border-color: var(--primary); background: var(--primary-light); }
+        .opt.correct { border-color: var(--green); background: var(--green-light); }
+        .opt.wrong { border-color: var(--red); background: var(--red-light); }
+        .opt.locked { cursor: default; }
+        .opt-letter { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--text-muted); flex-shrink: 0; }
+        .opt.selected .opt-letter { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .opt.correct .opt-letter { background: var(--green); color: #fff; border-color: var(--green); }
+        .opt.wrong .opt-letter { background: var(--red); color: #fff; border-color: var(--red); }
+        .opt-text { flex: 1; font-weight: 600; }
+        .opt-tag { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+        .opt.correct .opt-tag { background: var(--green); color: #fff; }
+        .opt.wrong .opt-tag { background: var(--red); color: #fff; }
+        .sol-box { margin-top: 20px; padding: 16px; background: #f8fafc; border-left: 4px solid var(--primary); border-radius: 12px; }
+        .sol-head { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; }
+        .quiz-nav { flex-shrink: 0; background: #fff; border-top: 1px solid var(--border-color); padding: 12px 18px; }
+        .quiz-nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; }
+        .nav-btn.prev { background: #fff; border: 1px solid var(--border-color); }
+        .nav-btn.prev:disabled { opacity: 0.4; cursor: not-allowed; }
+        .nav-btn.submit { background: var(--green-light); color: #065f46; border: 1px solid #a7f3d0; }
+        .nav-btn.next { background: var(--primary); color: #fff; }
+        .palette-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150; display: none; }
+        .palette-overlay.open { display: block; }
+        .palette-drawer { position: fixed; top: 0; left: 0; bottom: 0; width: min(340px, 85vw); background: #fff; z-index: 160; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform 0.25s; }
+        .palette-drawer.open { transform: translateX(0); }
+        .pal-head { padding: 18px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; font-weight: 700; }
+        .pal-grid { flex: 1; overflow-y: auto; padding: 16px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; align-content: start; }
+        .pal-btn { aspect-ratio: 1; border-radius: 10px; border: 1px solid var(--border-color); background: #f8fafc; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+        .pal-btn.answered { background: var(--green); color: #fff; border-color: var(--green); }
+        .pal-btn.current { outline: 2px solid var(--primary); outline-offset: 2px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 170; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; padding: 28px; text-align: center; }
+        .modal-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 22px; }
+        .modal-stat { background: #f8fafc; border-radius: 12px; padding: 14px; border: 1px solid var(--border-color); }
+        .modal-stat-num { font-size: 24px; font-weight: 800; }
+        .modal-btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .modal-btn.confirm { background: var(--primary); color: #fff; }
+        .modal-btn.cancel { background: #f1f5f9; }
+        .results-screen { position: fixed; inset: 0; background: var(--bg-main); z-index: 180; display: none; overflow-y: auto; padding: 30px 16px 60px; }
+        .results-screen.open { display: block; }
+        .results-box { max-width: 600px; margin: 0 auto; text-align: center; }
+        .res-score-card { background: #0f172a; color: #fff; border-radius: 20px; padding: 28px; margin: 20px 0; }
+        .res-score-val { font-size: 54px; font-weight: 800; }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .res-item { background: #fff; border-radius: 14px; padding: 16px; border: 1px solid var(--border-color); }
+        .res-item-val { font-size: 22px; font-weight: 700; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px); background: #0f172a; color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; z-index: 300; opacity: 0; transition: all 0.25s; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="start-screen" id="startScreen">
+        <div class="start-card">
+            <div class="brand-icon"><i class="fas fa-landmark"></i></div>
+            <h1 class="start-title">Fundamental Rights (Part III)</h1>
+            <p class="start-desc">Polity 5.0 — Lecture 8 (Practice & Speed Test)</p>
+            <button class="mode-btn" onclick="startApp('quiz')">
+                <div class="mode-icon quiz"><i class="fas fa-bolt"></i></div>
+                <div><div class="mode-name">Practice Mode</div><div class="mode-info-txt">Har question ke sath instant solution aur explanation.</div></div>
+            </button>
+            <button class="mode-btn" onclick="startApp('test')">
+                <div class="mode-icon test"><i class="fas fa-clock"></i></div>
+                <div><div class="mode-name">Exam Mode</div><div class="mode-info-txt">Bina kisi help ke test dein aur last me score dekhein.</div></div>
+            </button>
+        </div>
+    </div>
+
+    <div class="quiz-app hidden" id="quizApp">
+        <header class="quiz-header">
+            <div class="quiz-header-inner">
+                <button class="hdr-btn" onclick="openPalette()"><i class="fas fa-th-large"></i></button>
+                <div class="hdr-brand">Fundamental Rights Part-III</div>
+                <div class="hdr-timer"><i class="fas fa-stopwatch"></i> <span id="timerText">00:00</span></div>
+            </div>
+        </header>
+
+        <main class="quiz-main" id="quizMain"></main>
+
+        <nav class="quiz-nav" id="quizNav">
+            <div class="quiz-nav-inner">
+                <button class="nav-btn prev" id="prevBtn" onclick="prevQuestion()"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn submit" onclick="openSubmitModal()"><i class="fas fa-paper-plane"></i> Submit</button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextQuestion()"><span id="nextLabel">Next</span> <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </nav>
+    </div>
+
+    <div class="palette-overlay" id="paletteOverlay" onclick="closePalette()"></div>
+    <aside class="palette-drawer" id="paletteDrawer">
+        <div class="pal-head"><span>Questions</span><button onclick="closePalette()"><i class="fas fa-times"></i></button></div>
+        <div class="pal-grid" id="paletteGrid"></div>
+    </aside>
+
+    <div class="modal-overlay" id="submitModal">
+        <div class="modal-box">
+            <h3>Submit Test?</h3>
+            <div class="modal-stats-grid">
+                <div class="modal-stat"><div class="modal-stat-num" id="modalAttempted" style="color:var(--green)">0</div><div>Attempted</div></div>
+                <div class="modal-stat"><div class="modal-stat-num" id="modalUnattempted" style="color:var(--text-muted)">0</div><div>Unattempted</div></div>
+            </div>
+            <button class="modal-btn confirm" onclick="confirmSubmit()">Yes, Finish</button>
+            <button class="modal-btn cancel" onclick="closeSubmitModal()">Resume</button>
+        </div>
+    </div>
+
+    <div class="results-screen" id="resultsScreen"><div class="results-box" id="resultsInner"></div></div>
+    <div class="toast" id="toast"><span id="toastText"></span></div>
+
+    <script>
+        const QUESTIONS = [
+            {
+                e: "The Right to Freedom of Speech and Expression is guaranteed by which Article of the Indian Constitution?",
+                h: "भारतीय संविधान के किस अनुच्छेद द्वारा भाषण और अभिव्यक्ति की स्वतंत्रता के अधिकार की गारंटी दी गई है?",
+                oEn: ["Article 25", "Article 141(d)", "Article 19(1)(a)", "Article 21(1)(c)"],
+                oHi: ["अनुच्छेद 25", "अनुच्छेद 141(d)", "अनुच्छेद 19(1)(a)", "अनुच्छेद 21(1)(c)"],
+                a: 2,
+                sE: "Article 19(1)(a) of the Constitution guarantees all citizens the right to freedom of speech and expression.",
+                sH: "संविधान का अनुच्छेद 19(1)(a) सभी नागरिकों को वाक्-स्वातंत्र्य और अभिव्यक्ति-स्वातंत्र्य का अधिकार प्रदान करता है।"
+            },
+            {
+                e: "Under which Articles of the Indian Constitution are the Fundamental Rights enshrined?",
+                h: "भारतीय संविधान के किन अनुच्छेदों के तहत मौलिक अधिकारों को शामिल किया गया है?",
+                oEn: ["Articles 18-45", "Articles 14-24", "Articles 10-32", "Articles 12-35"],
+                oHi: ["अनुच्छेद 18-45", "अनुच्छेद 14-24", "अनुच्छेद 10-32", "अनुच्छेद 12-35"],
+                a: 3,
+                sE: "Fundamental Rights are contained in Part III of the Constitution from Articles 12 to 35.",
+                sH: "भारतीय संविधान के भाग III में अनुच्छेद 12 से 35 तक मौलिक अधिकारों का वर्णन है।"
+            },
+            {
+                e: "Which Article of the Indian Constitution safeguards the freedom of religion in India?",
+                h: "भारतीय संविधान का कौन सा अनुच्छेद भारत में धर्म की स्वतंत्रता की रक्षा करता है?",
+                oEn: ["Article 27", "Article 28", "Article 26", "Article 25"],
+                oHi: ["अनुच्छेद 27", "अनुच्छेद 28", "अनुच्छेद 26", "अनुच्छेद 25"],
+                a: 3,
+                sE: "Article 25 guarantees freedom of conscience and free profession, practice, and propagation of religion.",
+                sH: "अनुच्छेद 25 अंतःकरण की और धर्म को अबाध रूप से मानने, आचरण और प्रचार करने की स्वतंत्रता देता है।"
+            },
+            {
+                e: "The advisory board under provisions of Article 22 of the Constitution is to be consisted of persons who are, or have been or are qualified to be appointed as ____________.",
+                h: "संविधान के अनुच्छेद 22 के प्रावधानों के तहत सलाहकार बोर्ड में ऐसे व्यक्ति शामिल होते हैं जो ____________ के रूप में नियुक्त किए गए हैं, या रहे हैं या नियुक्त होने के योग्य हैं।",
+                oEn: ["Judges of Lower court", "Judges of Supreme court", "Judges of High court", "Judges of District court"],
+                oHi: ["निचली अदालत के न्यायाधीश", "सर्वोच्च न्यायालय के न्यायाधीश", "उच्च न्यायालय के न्यायाधीश", "जिला अदालत के न्यायाधीश"],
+                a: 2,
+                sE: "Under Article 22(4), an Advisory Board for preventive detention consists of persons who are, or have been, or are qualified to be appointed as Judges of a High Court.",
+                sH: "अनुच्छेद 22(4) के अनुसार, निवारक निरोध हेतु सलाहकार बोर्ड के सदस्य उच्च न्यायालय के न्यायाधीश या उसके समकक्ष अर्हता वाले होते हैं।"
+            },
+            {
+                e: "Which report is NOT associated with Fundamental Rights?",
+                h: "कौन सी रिपोर्ट मौलिक अधिकारों से संबंधित नहीं है?",
+                oEn: ["Tej Bahadur Sapru Report", "Sarkaria Commission Report", "JB Kripalani Report", "Motilal Nehru Report"],
+                oHi: ["तेज बहादुर सप्रू की रिपोर्ट", "सरकारिया आयोग की रिपोर्ट", "जेबी कृपलानी की रिपोर्ट", "मोतीलाल नेहरू रिपोर्ट"],
+                a: 1,
+                sE: "Sarkaria Commission Report (1987) was established to review the relationship and balance of power between State and Central governments, not Fundamental Rights.",
+                sH: "सरकारिया आयोग (1983-87) केंद्र-राज्य संबंधों की समीक्षा के लिए गठित किया गया था, इसका मौलिक अधिकारों से संबंध नहीं है।"
+            },
+            {
+                e: "Which Article of the Constitution clarifies that policies like 'reservation' is not a violation of right to equality?",
+                h: "संविधान का कौन-सा अनुच्छेद स्पष्ट करता है कि 'आरक्षण' जैसी नीतियां समानता के अधिकार का उल्लंघन नहीं हैं?",
+                oEn: ["Article 16 (4)", "Article 14 (1)", "Article 21", "Article 15 (2)"],
+                oHi: ["अनुच्छेद 16 (4)", "अनुच्छेद 14 (1)", "अनुच्छेद 21", "अनुच्छेद 15 (2)"],
+                a: 0,
+                sE: "Article 16(4) explicitly empowers the State to make reservations in appointments or posts in favour of any backward class not adequately represented.",
+                sH: "अनुच्छेद 16(4) राज्य को पिछड़े वर्गों के पक्ष में नियुक्तियों या पदों में आरक्षण का विशेष अधिकार देता है और यह समानता का उल्लंघन नहीं माना जाता।"
+            },
+            {
+                e: "How many fundamental rights were there at the time of adoption of the Indian Constitution?",
+                h: "भारतीय संविधान को अपनाने के समय कितने मौलिक अधिकार थे?",
+                oEn: ["Seven", "Five", "Six", "Eight"],
+                oHi: ["सात", "पांच", "छह", "आठ"],
+                a: 0,
+                sE: "Originally, the Constitution of India provided seven Fundamental Rights. The Right to Property was removed in 1978, leaving six.",
+                sH: "मूल संविधान में कुल 7 मौलिक अधिकार थे। 44वें संशोधन (1978) द्वारा संपत्ति का अधिकार हटाने के बाद अब 6 रह गए हैं।"
+            },
+            {
+                e: "In which year did the 44th Amendment remove the right to property from the list of fundamental rights?",
+                h: "44वें संशोधन द्वारा किस वर्ष संपत्ति के अधिकार को मौलिक अधिकारों की सूची से हटाया गया?",
+                oEn: ["1975", "1978", "1981", "1973"],
+                oHi: ["1975", "1978", "1981", "1973"],
+                a: 1,
+                sE: "The 44th Constitutional Amendment Act was enacted in 1978 under the Morarji Desai-led Janata Party government.",
+                sH: "44वां संविधान संशोधन 1978 में पारित किया गया था, जिसके तहत संपत्ति के अधिकार को अनुच्छेद 300A में कानूनी अधिकार बना दिया गया।"
+            },
+            {
+                e: "Which of the following NOT true about Right to Religion in India?",
+                h: "निम्नलिखित में से कौन सा भारत में धर्म के अधिकार के बारे में सही नहीं है?",
+                oEn: [
+                    "A person may choose any religion or may choose not to follow any religion.",
+                    "Everyone is free to choose a religion and practice that religion.",
+                    "Freedom to profess, follow and propagate any religion.",
+                    "Freedom for forcible conversions."
+                ],
+                oHi: [
+                    "कोई व्यक्ति किसी भी धर्म को चुन सकता है या किसी भी धर्म का पालन न करने का विकल्प चुन सकता है।",
+                    "हर कोई एक धर्म चुनने और उस धर्म का पालन करने के लिए स्वतंत्र है।",
+                    "किसी भी धर्म को मानने, पालन करने और प्रचार करने की स्वतंत्रता",
+                    "जबरन धर्म परिवर्तन की स्वतंत्रता"
+                ],
+                a: 3,
+                sE: "Article 25 provides the right to freely profess, practice, and propagate religion, but it strictly does not permit forcible or fraudulent conversions.",
+                sH: "भारतीय संविधान अंतःकरण की स्वतंत्रता देता है, परंतु किसी का भी जबरन धर्म परिवर्तन कराना कानूनन अपराध है और यह अधिकार में शामिल नहीं है।"
+            },
+            {
+                e: "Which of the following Articles of the Constitution gives the right to a candidate, belonging to any caste, to apply for any of the public employment opportunities?",
+                h: "संविधान का निम्नलिखित में से कौन-सा अनुच्छेद किसी भी जाति के उम्मीदवार को सार्वजनिक रोजगार के किसी भी अवसर के लिए आवेदन करने का अधिकार देता है?",
+                oEn: ["Article 16 (2)", "Article 17 (2)", "Article 18 (2)", "Article 15 (2)"],
+                oHi: ["अनुच्छेद 16 (2)", "अनुच्छेद 17 (2)", "अनुच्छेद 18 (2)", "अनुच्छेद 15 (2)"],
+                a: 0,
+                sE: "Article 16(2) provides that no citizen shall, on grounds only of religion, race, caste, sex, descent, place of birth, or residence, be ineligible for any office under the State.",
+                sH: "अनुच्छेद 16(2) के अनुसार राज्य के अधीन किसी पद या नियोजन के विषय में केवल धर्म, मूलवंश, जाति, लिंग, उद्भव, जन्मस्थान या निवास के आधार पर कोई भेदभाव नहीं होगा।"
+            },
+            {
+                e: "Fundamental Rights are protected and guaranteed by the _____ of the country.",
+                h: "मौलिक अधिकार देश के _____ द्वारा संरक्षित और गारंटीकृत हैं।",
+                oEn: ["government", "constitution", "customs or usage", "panchayats"],
+                oHi: ["सरकार", "संविधान", "प्रथाओं या उपयोग", "पंचायतों"],
+                a: 1,
+                sE: "Fundamental Rights are guaranteed and protected directly by the supreme law of the land—the Constitution.",
+                sH: "मौलिक अधिकारों की गारंटी और सुरक्षा सीधे देश के संविधान द्वारा दी जाती है।"
+            },
+            {
+                e: "Who was the Prime Minister when Right to Property was scrapped as a Fundamental Right?",
+                h: "जब संपत्ति के अधिकार को मौलिक अधिकार के रूप में समाप्त किया गया तब प्रधानमंत्री कौन थे?",
+                oEn: ["Charan Singh", "Indira Gandhi", "Morarji Desai", "Jawaharlal Nehru"],
+                oHi: ["चरण सिंह", "इंदिरा गांधी", "मोरारजी देसाई", "जवाहर लाल नेहरू"],
+                a: 2,
+                sE: "Morarji Desai was the Prime Minister during the 44th Constitutional Amendment in 1978.",
+                sH: "1978 में जब 44वां संविधान संशोधन हुआ, उस समय जनता पार्टी की सरकार में मोरारजी देसाई प्रधानमंत्री थे।"
+            },
+            {
+                e: "The last Sub-Section (k) on the education of children was added in 2002 as a part of the Fundamental Duties. The same Amendment also introduced __________ in the Constitution.",
+                h: "बच्चों की शिक्षा पर अंतिम उप-धारा (K) को 2002 में मौलिक कर्तव्यों के एक भाग के रूप में जोड़ा गया था। उसी संशोधन ने संविधान में __________ भी पेश किया।",
+                oEn: ["Article 48A", "Article 21A", "Article 32A", "Article 11A"],
+                oHi: ["अनुच्छेद 48A", "अनुच्छेद 21A", "अनुच्छेद 32A", "अनुच्छेद 11A"],
+                a: 1,
+                sE: "The 86th Amendment Act of 2002 added Article 21A (Right to Education) as a Fundamental Right, amended Article 45, and added Article 51A(k) as a Fundamental Duty.",
+                sH: "86वें संविधान संशोधन (2002) द्वारा अनुच्छेद 21A (शिक्षा का मौलिक अधिकार) जोड़ा गया और साथ ही 51A(k) में 11वां मौलिक कर्तव्य भी शामिल किया गया।"
+            },
+            {
+                e: "Which writ literally means 'what is your authority'?",
+                h: "कौन-सा रिट शाब्दिक रूप से 'आपका अधिकार क्या है?' का अर्थ रखता है?",
+                oEn: ["Quo-Warranto", "Prohibition", "Mandamus", "Habeas Corpus"],
+                oHi: ["अधिकार-पृच्छा (Quo-Warranto)", "प्रतिषेध", "परमादेश", "बंदी प्रत्यक्षीकरण"],
+                a: 0,
+                sE: "Quo-Warranto literally means 'by what authority or warrant'. It is used to challenge a person's legal right to hold a public office.",
+                sH: "क्वो-वारंटो (Quo-Warranto) का शाब्दिक अर्थ 'किस अधिकार या वारंट से' होता है।"
+            },
+            {
+                e: "'Reservation in promotion' comes under which Article of the Constitution?",
+                h: "पदोन्नति में 'आरक्षण' संविधान के किस अनुच्छेद के अंतर्गत आता है?",
+                oEn: ["Article 14 (4A)", "Article 15 (3B)", "Article 16 (4A)", "Article 19 (2)"],
+                oHi: ["अनुच्छेद 14 (4A)", "अनुच्छेद 15 (3B)", "अनुच्छेद 16 (4A)", "अनुच्छेद 19 (2)"],
+                a: 2,
+                sE: "Article 16(4A) was introduced by the 77th Constitutional Amendment Act, 1995, enabling reservations in promotions for SCs and STs.",
+                sH: "77वें संविधान संशोधन (1995) द्वारा अनुच्छेद 16(4A) जोड़ा गया, जो SC और ST वर्गों के लिए पदोन्नति में आरक्षण का प्रावधान करता है।"
+            },
+            {
+                e: "Which of the following Fundamental Rights is available for Indians as well as foreigners?",
+                h: "निम्नलिखित में से कौन सा मौलिक अधिकार भारतीयों के साथ-साथ विदेशियों के लिए भी उपलब्ध है?",
+                oEn: [
+                    "Right to elementary education",
+                    "Right of minorities to establish and administer educational institutions",
+                    "Equality of opportunity in matters of public employment",
+                    "Right to protection of language, script and culture of minorities"
+                ],
+                oHi: [
+                    "प्रारंभिक शिक्षा का अधिकार",
+                    "अल्पसंख्यकों को शैक्षणिक संस्थान स्थापित करने और प्रशासन करने का अधिकार",
+                    "सार्वजनिक रोजगार के मामलों में अवसर की समानता",
+                    "अल्पसंख्यकों की भाषा, लिपि और संस्कृति के संरक्षण का अधिकार"
+                ],
+                a: 0,
+                sE: "Article 21A (Right to elementary education) is available to all persons. Articles 15, 16, 19, 29, and 30 are available exclusively to Indian citizens.",
+                sH: "अनुच्छेद 21A (प्रारंभिक शिक्षा का अधिकार) नागरिक और विदेशी दोनों को प्राप्त है, जबकि 15, 16, 19, 29 और 30 केवल भारतीय नागरिकों के लिए हैं।"
+            },
+            {
+                e: "Certiorari comes under the:",
+                h: "उत्प्रेषण (Certiorari) किसके अंतर्गत आता है?",
+                oEn: ["right against exploitation", "right to religious freedom", "right to constitutional remedies", "right to equality"],
+                oHi: ["शोषण के विरुद्ध अधिकार", "धार्मिक स्वतंत्रता का अधिकार", "संवैधानिक उपचारों का अधिकार", "समानता का अधिकार"],
+                a: 2,
+                sE: "Certiorari is one of the five prerogative writs issued under Article 32 and Article 226 for the enforcement of constitutional remedies.",
+                sH: "उत्प्रेषण (Certiorari) अनुच्छेद 32 और 226 के तहत संवैधानिक उपचारों के अधिकार के अंतर्गत जारी की जाने वाली रिट है।"
+            },
+            {
+                e: "In which judgement did the Supreme Court extend the scope of Article 21 and observed that 'the Right to education flows directly from the Right to life'?",
+                h: "किस फैसले में सर्वोच्च न्यायालय ने अनुच्छेद 21 के दायरे का विस्तार किया और यह देखा कि 'शिक्षा का अधिकार सीधे जीवन के अधिकार से निकलता है'?",
+                oEn: ["Kharak Singh v State of UP", "Malak Singh v State of Punjab", "Neerja Choudhari v State of M. P", "Mohini Jain v State of Karnataka"],
+                oHi: ["खड़क सिंह बनाम उत्तर प्रदेश राज्य", "मलक सिंह बनाम पंजाब राज्य", "नीरजा चौधरी बनाम मध्य प्रदेश राज्य", "मोहिनी जैन बनाम कर्नाटक राज्य"],
+                a: 3,
+                sE: "In Mohini Jain v. State of Karnataka (1992), the Supreme Court held that the right to education is an essential ingredient of the right to life under Article 21.",
+                sH: "मोहिनी जैन बनाम कर्नाटक राज्य (1992) मामले में सर्वोच्च न्यायालय ने कहा कि शिक्षा का अधिकार सीधे अनुच्छेद 21 (जीवन का अधिकार) से निकलता है।"
+            },
+            {
+                e: "Which Clause of Article 20 incorporates the doctrine of double jeopardy?",
+                h: "अनुच्छेद 20 का कौन-सा खंड दोहरे जोखिम (Double Jeopardy) के सिद्धांत को शामिल करता है?",
+                oEn: ["4", "3", "2", "1"],
+                oHi: ["4", "3", "2", "1"],
+                a: 2,
+                sE: "Article 20(2) states that 'no person shall be prosecuted and punished for the same offence more than once.'",
+                sH: "अनुच्छेद 20(2) में दोहरे दंड से मुक्ति का सिद्धांत है, जिसके अनुसार एक ही अपराध के लिए किसी व्यक्ति को एक से अधिक बार दंडित नहीं किया जा सकता।"
+            },
+            {
+                e: "X has been exercising his freedom of trade in Chennai to earn his livelihood. Such kind of freedom is provided in which of the following Articles of the Indian Constitution?",
+                h: "X अपनी आजीविका कमाने के लिए चेन्नई में व्यापार की अपनी स्वतंत्रता का प्रयोग कर रहा है। भारतीय संविधान के निम्नलिखित में से किस अनुच्छेद में इस प्रकार की स्वतंत्रता प्रदान की गई है?",
+                oEn: ["Article 18", "Article 19", "Article 17", "Article 16"],
+                oHi: ["अनुच्छेद 18", "अनुच्छेद 19", "अनुच्छेद 17", "अनुच्छेद 16"],
+                a: 1,
+                sE: "Article 19(1)(g) guarantees the right to practice any profession, or to carry on any occupation, trade or business.",
+                sH: "अनुच्छेद 19(1)(g) के तहत देश के किसी भी नागरिक को अपनी आजीविका के लिए कोई भी व्यापार या व्यवसाय करने की स्वतंत्रता प्राप्त है।"
+            },
+            {
+                e: "Which statement is FALSE regarding fundamental rights mentioned in the Indian Constitution?",
+                h: "भारतीय संविधान में वर्णित मौलिक अधिकारों के संदर्भ में कौन सा कथन असत्य है?",
+                oEn: [
+                    "Only Article 20 and 21 can be suspended during emergency",
+                    "They are justiciable",
+                    "Some fundamental rights are negative in nature",
+                    "Can be suspended during emergency"
+                ],
+                oHi: [
+                    "आपातकाल के दौरान केवल अनुच्छेद 20 और 21 को निलंबित किया जा सकता है",
+                    "वे न्यायसंगत हैं",
+                    "कुछ मौलिक अधिकार नकारात्मक प्रकृति के हैं",
+                    "आपातकाल के दौरान निलंबित किए जा सकते हैं"
+                ],
+                a: 0,
+                sE: "The statement is false because Articles 20 and 21 CANNOT be suspended during an emergency; whereas other fundamental rights can be.",
+                sH: "कथन A गलत है क्योंकि आपातकाल में अनुच्छेद 20 और 21 को कभी भी निलंबित नहीं किया जा सकता, बाकी अधिकारों को निलंबित किया जा सकता है।"
+            },
+            {
+                e: "Which of the following Articles of the Indian Constitution mentions the right to form co-operative societies?",
+                h: "भारतीय संविधान के निम्नलिखित में से किस अनुच्छेद में सहकारी समितियां बनाने के अधिकार का उल्लेख है?",
+                oEn: ["19 (1) (d)", "19 (1) (c)", "19 (1) (b)", "19 (1) (a)"],
+                oHi: ["19 (1) (d)", "19 (1) (c)", "19 (1) (b)", "19 (1) (a)"],
+                a: 1,
+                sE: "The 97th Constitutional Amendment Act, 2011 added the right to form 'co-operative societies' under Article 19(1)(c).",
+                sH: "97वें संविधान संशोधन (2011) द्वारा अनुच्छेद 19(1)(c) में संघ या यूनियन के साथ-साथ 'सहकारी समितियां' बनाने का अधिकार भी शामिल किया गया।"
+            },
+            {
+                e: "Which of the following statements is FALSE about the right to freedom of religion mentioned in the Indian Constitution?",
+                h: "भारतीय संविधान में उल्लिखित धार्मिक स्वतंत्रता के अधिकार के बारे में निम्नलिखित में से कौन सा कथन असत्य है?",
+                oEn: [
+                    "It provides freedom to manage religious affairs.",
+                    "It provides freedom of worship.",
+                    "It is mentioned in Articles 25 to 28.",
+                    "It mentions that the state has its own religion."
+                ],
+                oHi: [
+                    "यह धार्मिक मामलों के प्रबंधन की स्वतंत्रता प्रदान करता है।",
+                    "यह पूजा की स्वतंत्रता प्रदान करता है।",
+                    "इसका उल्लेख अनुच्छेद 25 से 28 में है।",
+                    "इसमें उल्लेख है कि राज्य का अपना धर्म है।"
+                ],
+                a: 3,
+                sE: "India is a secular state. The Indian Constitution maintains strict state neutrality in religious matters and does not establish any state religion.",
+                sH: "भारत एक धर्मनिरपेक्ष राष्ट्र है और संविधान के अनुसार राज्य का अपना कोई आधिकारिक धर्म नहीं है।"
+            },
+            {
+                e: "Which of the following statements about fundamental rights mentioned in the Indian Constitution is FALSE?",
+                h: "भारतीय संविधान में उल्लिखित मौलिक अधिकारों के बारे में निम्नलिखित में से कौन सा कथन गलत है?",
+                oEn: [
+                    "They provide necessary conditions for moral protection.",
+                    "The lay down the foundation for social justice.",
+                    "They provide necessary conditions for material protection.",
+                    "They provide necessary conditions for practicing untouchability."
+                ],
+                oHi: [
+                    "वे नैतिक सुरक्षा के लिए आवश्यक शर्तें प्रदान करते हैं।",
+                    "उन्होंने सामाजिक न्याय की नींव रखी।",
+                    "वे भौतिक सुरक्षा के लिए आवश्यक शर्तें प्रदान करते हैं।",
+                    "वे अस्पृश्यता का अभ्यास करने के लिए आवश्यक शर्तें प्रदान करते हैं।"
+                ],
+                a: 3,
+                sE: "Article 17 explicitly abolishes untouchability and penalizes its practice; fundamental rights never promote it.",
+                sH: "मौलिक अधिकार अस्पृश्यता का पूर्णतः उन्मूलन (अनुच्छेद 17) करते हैं, इसका अभ्यास करने के लिए शर्तें प्रदान नहीं करते।"
+            },
+            {
+                e: "Article related to compulsory acquisition of property has been omitted now from the Indian constitution. What is the number of this article?",
+                h: "संपत्ति के अनिवार्य अधिग्रहण से संबंधित अनुच्छेद को अब भारतीय संविधान से हटा दिया गया है। इस अनुच्छेद की संख्या क्या है?",
+                oEn: ["31D", "31", "31B", "31A"],
+                oHi: ["31D", "31", "31B", "31A"],
+                a: 1,
+                sE: "Article 31 provided for compulsory acquisition of property and was deleted by the 44th Amendment in 1978.",
+                sH: "संपत्ति के अनिवार्य अधिग्रहण से संबंधित अनुच्छेद 31 को 44वें संशोधन द्वारा निरसित कर दिया गया था।"
+            },
+            {
+                e: "Which among the following is not a type of Right to freedom in the Indian constitution?",
+                h: "निम्नलिखित में से कौन-सा भारतीय संविधान में स्वतंत्रता के अधिकार का एक प्रकार नहीं है?",
+                oEn: [
+                    "Protection of certain rights regarding freedom of speech, etc.",
+                    "Protection of life and personal liberty",
+                    "Offences for armed assembly",
+                    "Protection in respect of conviction for offences."
+                ],
+                oHi: [
+                    "भाषण आदि की स्वतंत्रता के संबंध में कुछ अधिकारों का संरक्षण",
+                    "जीवन और व्यक्तिगत स्वतंत्रता का संरक्षण",
+                    "सशस्त्र सभा के लिए अपराध",
+                    "अपराधों के लिए सजा के संबंध में संरक्षण"
+                ],
+                a: 2,
+                sE: "Article 19(1)(b) allows peaceable assembly 'without arms'. Armed assembly is illegal and definitely not a freedom.",
+                sH: "संविधान शांतिपूर्वक और बिना हथियारों के सम्मेलन की स्वतंत्रता देता है; 'सशस्त्र सभा' कोई अधिकार नहीं बल्कि अपराध है।"
+            },
+            {
+                e: "Assume a situation where A has gone to a cinema hall with her friends to watch a movie. In the next seat she realises that it is her maid who is also watching the movie. Now A asks her maid to leave the cinema hall.\nIn the above scenario, which of the following Article of the Constitution of India can provide relief to the maid?",
+                h: "मान लीजिए कि A अपनी सहेलियों के साथ सिनेमा हॉल में फिल्म देखने गई है। उसे पता चलता है कि पास की सीट पर उसकी नौकरानी बैठी है जो फिल्म देख रही है। अब A अपनी नौकरानी को सिनेमा हॉल से निकल जाने के लिए कहती है।\nउपरोक्त परिदृश्य में, भारतीय संविधान का निम्नलिखित में से कौन-सा अनुच्छेद नौकरानी को राहत प्रदान कर सकता है?",
+                oEn: ["Article 16", "Article 15", "Article 18", "Article 17"],
+                oHi: ["अनुच्छेद 16", "अनुच्छेद 15", "अनुच्छेद 18", "अनुच्छेद 17"],
+                a: 1,
+                sE: "Article 15(2) guarantees that no citizen shall face discrimination/restriction regarding access to shops, public restaurants, hotels and places of public entertainment (like cinema halls).",
+                sH: "अनुच्छेद 15(2) सार्वजनिक मनोरंजन के स्थानों (जैसे सिनेमा हॉल) में किसी भी नागरिक के प्रवेश पर जाति, लिंग, वर्ग आदि के आधार पर भेदभाव का निषेध करता है।"
+            },
+            {
+                e: "What are the two most essential rights of a democracy?",
+                h: "लोकतंत्र के दो सबसे आवश्यक अधिकार कौन-से हैं?",
+                oEn: [
+                    "Exploitation, Preventive detention",
+                    "Equality, Liberty",
+                    "Liberty, Preventive detention",
+                    "Equality, Exploitation"
+                ],
+                oHi: [
+                    "शोषण, निवारक निरोध",
+                    "समानता, स्वतंत्रता",
+                    "स्वतंत्रता, निवारक निरोध",
+                    "समानता, शोषण"
+                ],
+                a: 1,
+                sE: "Equality and Liberty (Freedom) are universally recognized as the foundational pillars of any democratic society.",
+                sH: "समानता और स्वतंत्रता (Equality and Liberty) किसी भी लोकतांत्रिक व्यवस्था के दो सबसे अनिवार्य अधिकार हैं।"
+            }
+        ];
+
+        const state = {
+            current: 0,
+            answers: new Array(QUESTIONS.length).fill(null),
+            locked: new Array(QUESTIONS.length).fill(false),
+            mode: 'test',
+            lang: 'en',
+            startTime: null,
+            timerInterval: null,
+            elapsed: 0
+        };
+
+        function $(id) { return document.getElementById(id); }
+
+        function toast(msg) {
+            const t = $('toast');
+            $('toastText').textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            return String(m).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+        }
+
+        function startApp(mode) {
+            state.mode = mode;
+            $('startScreen').classList.add('hidden');
+            $('quizApp').classList.remove('hidden');
+            state.startTime = Date.now();
+            state.timerInterval = setInterval(() => {
+                state.elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+                $('timerText').textContent = formatTime(state.elapsed);
+            }, 1000);
+            renderQuestion();
+            buildPalette();
+        }
+
+        function toggleLang() {
+            state.lang = state.lang === 'en' ? 'hi' : 'en';
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const i = state.current;
+            const q = QUESTIONS[i];
+            const isQuiz = state.mode === 'quiz';
+            const locked = state.locked[i];
+            const userAns = state.answers[i];
+            const qTxt = state.lang === 'en' ? q.e : q.h;
+            const opts = state.lang === 'en' ? q.oEn : q.oHi;
+
+            let optsHtml = '';
+            opts.forEach((opt, idx) => {
+                let cls = '', tag = '';
+                if (isQuiz && locked) {
+                    if (idx === q.a) {
+                        cls = 'correct';
+                        tag = '<span class="opt-tag">Correct</span>';
+                    }
+                    if (userAns === idx && idx !== q.a) {
+                        cls = 'wrong';
+                        tag = '<span class="opt-tag">Your Ans</span>';
+                    }
+                } else if (userAns === idx) {
+                    cls = 'selected';
+                }
+                optsHtml += `
+                    <div class="opt ${cls} ${locked ? 'locked' : ''}" onclick="selectOption(${idx})">
+                        <div class="opt-letter">${String.fromCharCode(65 + idx)}</div>
+                        <div class="opt-text">${opt}</div>
+                        ${tag}
+                    </div>
+                `;
+            });
+
+            const solTxt = state.lang === 'en' ? q.sE : q.sH;
+            let solHtml = (isQuiz && locked) ? `
+                <div class="sol-box">
+                    <div class="sol-head"><i class="fas fa-lightbulb"></i> Explanation</div>
+                    <div>${solTxt}</div>
+                </div>
+            ` : '';
+
+            $('quizMain').innerHTML = `
+                <div class="q-card">
+                    <div class="q-top">
+                        <div class="q-num-badge">Question ${i + 1} of ${QUESTIONS.length}</div>
+                        <button class="lang-btn" onclick="toggleLang()">
+                            <i class="fas fa-language"></i> ${state.lang === 'en' ? 'हिन्दी' : 'English'}
+                        </button>
+                    </div>
+                    <div class="q-text">${qTxt}</div>
+                    <div class="opts">${optsHtml}</div>
+                    ${solHtml}
+                </div>
+            `;
+
+            $('prevBtn').disabled = i === 0;
+            $('nextLabel').textContent = i === QUESTIONS.length - 1 ? 'Finish' : 'Next';
+            updatePaletteGrid();
+        }
+
+        function selectOption(idx) {
+            if (state.mode === 'quiz' && state.locked[state.current]) return;
+            state.answers[state.current] = idx;
+            if (state.mode === 'quiz') {
+                state.locked[state.current] = true;
+                if (idx === QUESTIONS[state.current].a) {
+                    toast('Correct! 🎉');
+                } else {
+                    toast('Incorrect');
+                }
+            }
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (state.current > 0) {
+                state.current--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (state.current < QUESTIONS.length - 1) {
+                state.current++;
+                renderQuestion();
+            } else {
+                openSubmitModal();
+            }
+        }
+
+        function buildPalette() {
+            const grid = $('paletteGrid');
+            grid.innerHTML = '';
+            QUESTIONS.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'pal-btn';
+                btn.id = 'pal-' + i;
+                btn.textContent = i + 1;
+                btn.onclick = () => {
+                    state.current = i;
+                    closePalette();
+                    renderQuestion();
+                };
+                grid.appendChild(btn);
+            });
+            updatePaletteGrid();
+        }
+
+        function updatePaletteGrid() {
+            QUESTIONS.forEach((_, i) => {
+                const btn = $('pal-' + i);
+                if (!btn) return;
+                btn.className = 'pal-btn';
+                if (i === state.current) btn.classList.add('current');
+                if (state.answers[i] !== null) btn.classList.add('answered');
+            });
+        }
+
+        function openPalette() {
+            $('paletteDrawer').classList.add('open');$('paletteOverlay').classList.add('open');
+        }
+
+        function closePalette() {
+            $('paletteDrawer').classList.remove('open');$('paletteOverlay').classList.remove('open');
+        }
+
+        function openSubmitModal() {
+            const ans = state.answers.filter(a => a !== null).length;
+            $('modalAttempted').textContent = ans;
+            $('modalUnattempted').textContent = QUESTIONS.length - ans;
+            $('submitModal').classList.add('open');
+        }
+
+        function closeSubmitModal() {
+            $('submitModal').classList.remove('open');
+        }
+
+        function confirmSubmit() {
+            closeSubmitModal();
+            if (state.timerInterval) clearInterval(state.timerInterval);
+            let correct = 0, wrong = 0;
+            state.answers.forEach((ans, i) => {
+                if (ans !== null) {
+                    if (ans === QUESTIONS[i].a) correct++;
+                    else wrong++;
+                }
+            });
+            $('resultsInner').innerHTML = `
+                <h2>Test Completed!</h2>
+                <p style="color:var(--text-muted);margin:8px 0;">Total Time: ${formatTime(state.elapsed)}</p>
+                <div class="res-score-card">
+                    <div class="res-score-val">${correct} / ${QUESTIONS.length}</div>
+                    <div>Score</div>
+                </div>
+                <div class="res-grid">
+                    <div class="res-item"><div class="res-item-val" style="color:var(--green)">${correct}</div><div>Correct</div></div>
+                    <div class="res-item"><div class="res-item-val" style="color:var(--red)">${wrong}</div><div>Wrong</div></div>
+                </div>
+                <button class="modal-btn confirm" onclick="location.reload()">Re-attempt</button>
+            `;
+            $('resultsScreen').classList.add('open');
+        }
+    </script>
+</body>
+</html>
